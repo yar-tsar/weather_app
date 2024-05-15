@@ -20,10 +20,12 @@ class WeatherModel {
   });
 
   final WeatherCondition condition;
-  final double temp;
+  final num temp;
   final int humidity;
   final int pressure;
-  final double windSpeed;
+  final num windSpeed;
+
+  String get description => weatherDescription(condition);
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
     final condition = weatherCondition(json['weather'][0]['description']);
@@ -58,6 +60,31 @@ class WeatherModel {
         return WeatherCondition.mist;
       default:
         return WeatherCondition.clearSky;
+    }
+  }
+
+  weatherDescription(WeatherCondition condition) {
+    switch (condition) {
+      case WeatherCondition.clearSky:
+        return 'Clear sky';
+      case WeatherCondition.fewClouds:
+        return 'Few clouds';
+      case WeatherCondition.scatteredClouds:
+        return 'Scattered clouds';
+      case WeatherCondition.brokenClouds:
+        return 'Broken clouds';
+      case WeatherCondition.showerRain:
+        return 'Shower rain';
+      case WeatherCondition.rain:
+        return 'Rain';
+      case WeatherCondition.thunderstorm:
+        return 'Thunderstorm';
+      case WeatherCondition.snow:
+        return 'Snow';
+      case WeatherCondition.mist:
+        return 'Mist';
+      default:
+        return 'No data';
     }
   }
 }

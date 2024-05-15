@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/common/presentation/widgets/weather_icon.dart';
-import 'package:weather_app/common/utils/weather_description.dart';
 import 'package:weather_app/features/current/presentation/bloc/current_weather_cubit.dart';
 import 'package:weather_app/features/current/presentation/bloc/current_weather_state.dart';
+import 'package:weather_app/features/forecast/presentation/bloc/forecast_cubit.dart';
 import 'package:weather_app/features/geo/bloc/geo_bloc.dart';
 import 'package:weather_app/features/geo/bloc/geo_events.dart';
 import 'package:weather_app/features/geo/bloc/geo_state.dart';
@@ -24,7 +24,11 @@ class CurrentWeatherScreen extends StatelessWidget {
               //TODO: implement refresh
               context.read<GeoBloc>().add(CheckConnection());
               context.read<GeoBloc>().add(GetGeoData());
-              context.read<CurrentWeatherCubit>().updateWeather(
+              context.read<CurrentWeatherCubit>().fetchWeather(
+                    geoState.locationData?.latitude,
+                    geoState.locationData?.longitude,
+                  );
+              context.read<ForecastCubit>().fetchForecast(
                     geoState.locationData?.latitude,
                     geoState.locationData?.longitude,
                   );
@@ -57,7 +61,7 @@ class CurrentWeatherScreen extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: weatherState.condition != null
-                                  ? '${weatherDescription(weatherState.condition!)} '
+                                  ? '${(weatherState.weather!.description)} '
                                   : '---- ',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,

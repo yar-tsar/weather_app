@@ -6,7 +6,7 @@ import 'package:weather_app/features/current/presentation/bloc/current_weather_s
 class CurrentWeatherCubit extends Cubit<CurrentWeatherState> {
   CurrentWeatherCubit() : super(CurrentWeatherState());
 
-  Future<void> updateWeather(double? latitude, double? longitude) async {
+  Future<void> fetchWeather(double? latitude, double? longitude) async {
     if (latitude == null || longitude == null) {
       print('ABORT');
       return;

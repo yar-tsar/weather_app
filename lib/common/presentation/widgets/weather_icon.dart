@@ -6,9 +6,16 @@ class WeatherIcon extends StatelessWidget {
   const WeatherIcon({
     required this.weatherCondition,
     super.key,
+    this.size,
   });
 
   final WeatherCondition weatherCondition;
+  final Size? size;
+
+  const WeatherIcon.small({
+    required this.weatherCondition,
+    super.key,
+  }) : size = const Size(80, 80);
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +32,8 @@ class WeatherIcon extends StatelessWidget {
     };
 
     return SizedBox(
-      width: 220,
-      height: 220,
+      width: size?.width ?? 220,
+      height: size?.height ?? 220,
       child: SvgPicture.asset(
         'assets/weather_icons/day/$icon',
       ),
