@@ -23,7 +23,7 @@ class WeatherModel {
   final double temp;
   final int humidity;
   final int pressure;
-  final int windSpeed;
+  final double windSpeed;
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
     final condition = weatherCondition(json['weather'][0]['description']);

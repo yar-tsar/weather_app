@@ -46,6 +46,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     );
     final result =
         (response.data as List).map((e) => LocationModel.fromJson(e)).toList();
+
     emit(
       state.copyWith(
         location: result.first,

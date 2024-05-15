@@ -7,6 +7,8 @@ class CurrentWeatherState {
 
   WeatherModel? weather;
 
+  WeatherCondition? get condition => weather?.condition;
+
   String get temperature =>
       weather?.temp != null ? '${weather?.temp.toString()} °C' : '-- °C';
 

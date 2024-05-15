@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/features/current/presentation/bloc/current_weather_cubit.dart';
 import 'package:weather_app/features/forecast/presentation/forecast_screen.dart';
 import 'package:weather_app/features/current/presentation/current_weather_screen.dart';
+import 'package:weather_app/features/geo/bloc/geo_bloc.dart';
+import 'package:weather_app/features/geo/bloc/geo_events.dart';
+import 'package:weather_app/features/geo/bloc/geo_state.dart';
 
 class PagedNavigation extends StatefulWidget {
   const PagedNavigation({super.key});
@@ -18,6 +23,8 @@ class _PagedNavigationState extends State<PagedNavigation> {
     _controller = PageController(
       initialPage: currentIndex,
     );
+    context.read<GeoBloc>().add(CheckConnection());
+    context.read<GeoBloc>().add(GetGeoData());
     super.initState();
   }
 
@@ -42,36 +49,46 @@ class _PagedNavigationState extends State<PagedNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: PageView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            onPageChanged: syncPage,
-            controller: _controller,
-            children: const [
-              CurrentWeatherScreen(),
-              ForecastScreen(),
+    return BlocListener<GeoBloc, GeoState>(
+      listener: (context, state) {
+        if (state.locationData != null) {
+          context.read<CurrentWeatherCubit>().updateWeather(
+                state.locationData?.latitude,
+                state.locationData?.longitude,
+              );
+        }
+      },
+      child: Column(
+        children: [
+          Expanded(
+            child: PageView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              onPageChanged: syncPage,
+              controller: _controller,
+              children: const [
+                CurrentWeatherScreen(),
+                ForecastScreen(),
+              ],
+            ),
+          ),
+          BottomNavigationBar(
+            currentIndex: currentIndex,
+            onTap: changePage,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Text(
+                  'Today',
+                ),
+                label: 'Today',
+              ),
+              BottomNavigationBarItem(
+                icon: Text('Forecast'),
+                label: 'Forecast',
+              ),
             ],
           ),
-        ),
-        BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: changePage,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Text(
-                'Today',
-              ),
-              label: 'Today',
-            ),
-            BottomNavigationBarItem(
-              icon: Text('Forecast'),
-              label: 'Forecast',
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
