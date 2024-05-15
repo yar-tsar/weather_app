@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/ui/widgets/paged_navigation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/features/geo/bloc/geo_bloc.dart';
+import 'package:weather_app/common/presentation/main_screen.dart';
 
 void main() {
   runApp(const App());
@@ -11,12 +13,14 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Weather App',
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const SafeArea(
-        child: PagedNavigation(),
+      home: BlocProvider(
+        create: (context) => GeoBloc(),
+        child: const MainScreen(),
       ),
     );
   }

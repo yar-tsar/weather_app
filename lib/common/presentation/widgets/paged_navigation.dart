@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/ui/features/forecast/forecast_view.dart';
-import 'package:weather_app/ui/features/today/today_view.dart';
+import 'package:weather_app/features/forecast/presentation/forecast_screen.dart';
+import 'package:weather_app/features/today/presentation/today_screen.dart';
 
 class PagedNavigation extends StatefulWidget {
   const PagedNavigation({super.key});
@@ -35,11 +35,18 @@ class _PagedNavigationState extends State<PagedNavigation> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
           child: PageView(
+            physics: const AlwaysScrollableScrollPhysics(),
             onPageChanged: syncPage,
             controller: _controller,
             children: const [
