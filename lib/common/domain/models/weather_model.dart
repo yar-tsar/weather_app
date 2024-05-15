@@ -1,7 +1,3 @@
-import 'package:json_annotation/json_annotation.dart';
-
-part 'weather_model.g.dart';
-
 enum WeatherCondition {
   clearSky,
   fewClouds,
@@ -11,10 +7,9 @@ enum WeatherCondition {
   rain,
   thunderstorm,
   snow,
-  mist,
+  mist;
 }
 
-@JsonSerializable()
 class WeatherModel {
   WeatherModel({
     required this.condition,
@@ -28,9 +23,41 @@ class WeatherModel {
   final double temp;
   final int humidity;
   final int pressure;
-  final double windSpeed;
+  final int windSpeed;
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
-    return _$WeatherModelFromJson(json);
+    final condition = weatherCondition(json['weather'][0]['description']);
+    return WeatherModel(
+      condition: condition,
+      temp: json['main']['temp'],
+      pressure: json['main']['pressure'],
+      humidity: json['main']['humidity'],
+      windSpeed: json['wind']['speed'],
+    );
+  }
+
+  static WeatherCondition weatherCondition(String condition) {
+    switch (condition) {
+      case 'clear sky':
+        return WeatherCondition.clearSky;
+      case 'few clouds':
+        return WeatherCondition.fewClouds;
+      case 'scattered clouds':
+        return WeatherCondition.scatteredClouds;
+      case 'broken clouds':
+        return WeatherCondition.brokenClouds;
+      case 'shower rain':
+        return WeatherCondition.showerRain;
+      case 'rain':
+        return WeatherCondition.rain;
+      case 'thunderstorm':
+        return WeatherCondition.thunderstorm;
+      case 'snow':
+        return WeatherCondition.snow;
+      case 'mist':
+        return WeatherCondition.mist;
+      default:
+        return WeatherCondition.clearSky;
+    }
   }
 }

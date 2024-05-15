@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/features/forecast/presentation/forecast_screen.dart';
-import 'package:weather_app/features/today/presentation/today_screen.dart';
+import 'package:weather_app/features/current/presentation/current_weather_screen.dart';
 
 class PagedNavigation extends StatefulWidget {
   const PagedNavigation({super.key});
@@ -50,8 +50,8 @@ class _PagedNavigationState extends State<PagedNavigation> {
             onPageChanged: syncPage,
             controller: _controller,
             children: const [
-              TodayView(),
-              ForecastView(),
+              CurrentWeatherScreen(),
+              ForecastScreen(),
             ],
           ),
         ),

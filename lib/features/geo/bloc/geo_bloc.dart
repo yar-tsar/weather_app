@@ -37,7 +37,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
   }
 
   Future<void> _getGeoData(GeoEvent event, Emitter<GeoState> emit) async {
-    Location location = Location()..changeSettings();
+    Location location = Location();
     LocationData locationData;
     locationData = await location.getLocation();
     Dio dio = Dio();
@@ -49,6 +49,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     emit(
       state.copyWith(
         location: result.first,
+        locationData: locationData,
       ),
     );
   }

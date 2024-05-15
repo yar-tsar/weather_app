@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/features/geo/bloc/geo_bloc.dart';
 import 'package:weather_app/features/geo/bloc/geo_state.dart';
 
-class ForecastView extends StatelessWidget {
-  const ForecastView({super.key});
+class ForecastScreen extends StatelessWidget {
+  const ForecastScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
