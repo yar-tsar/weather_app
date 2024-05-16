@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:weather_app/common/presentation/widgets/weather_icon.dart';
 import 'package:weather_app/features/current/presentation/bloc/current_weather_cubit.dart';
 import 'package:weather_app/features/current/presentation/bloc/current_weather_state.dart';
@@ -46,13 +47,19 @@ class CurrentWeatherScreen extends StatelessWidget {
                               height: 60,
                             )
                           : WeatherIcon(
-                              weatherCondition:
-                                  weatherState.weather!.condition),
+                              weatherCondition: weatherState.weather!.condition,
+                            ),
                     ),
                     const SizedBox(height: 32),
                     Center(
                       child: Text(
                         geoState.locationInfo,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Center(
+                      child: Text(
+                        weatherState.timestamp,
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -149,7 +156,23 @@ class CurrentWeatherScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 64),
+                    GestureDetector(
+                      onTap: () {
+                        Share.share(
+                          weatherState.shareMessage,
+                        );
+                      },
+                      child: const Center(
+                        child: Text(
+                          'Share weather',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 );
               },

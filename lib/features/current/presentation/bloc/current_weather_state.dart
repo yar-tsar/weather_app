@@ -1,3 +1,4 @@
+import 'package:jiffy/jiffy.dart';
 import 'package:weather_app/common/domain/models/weather_model.dart';
 
 class CurrentWeatherState {
@@ -22,6 +23,13 @@ class CurrentWeatherState {
   String get pressure => weather?.pressure != null
       ? '${weather?.pressure.toString()} hPa'
       : '-- hPa';
+
+  String get timestamp => weather != null
+      ? Jiffy.parseFromMillisecondsSinceEpoch(weather!.timestamp * 1000).Hm
+      : '--';
+
+  String get shareMessage =>
+      'Hi! I am currently in $temperature, $humidity, $windSpeed, $pressure';
 
   CurrentWeatherState copyWith({
     WeatherModel? weather,

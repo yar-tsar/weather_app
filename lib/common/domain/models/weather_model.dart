@@ -17,6 +17,7 @@ class WeatherModel {
     required this.humidity,
     required this.pressure,
     required this.windSpeed,
+    required this.timestamp,
   });
 
   final WeatherCondition condition;
@@ -24,6 +25,7 @@ class WeatherModel {
   final int humidity;
   final int pressure;
   final num windSpeed;
+  final int timestamp;
 
   String get description => weatherDescription(condition);
 
@@ -35,6 +37,7 @@ class WeatherModel {
       pressure: json['main']['pressure'],
       humidity: json['main']['humidity'],
       windSpeed: json['wind']['speed'],
+      timestamp: json['dt'],
     );
   }
 
