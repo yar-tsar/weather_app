@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:weather_app/features/current/presentation/bloc/current_weather_cubit.dart';
 import 'package:weather_app/features/forecast/presentation/bloc/forecast_cubit.dart';
 import 'package:weather_app/features/forecast/presentation/forecast_screen.dart';
@@ -27,6 +28,9 @@ class _PagedNavigationState extends State<PagedNavigation> {
     context.read<GeoBloc>().add(CheckConnection());
     context.read<GeoBloc>().add(GetGeoData());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FlutterNativeSplash.remove();
+    });
   }
 
   void syncPage(int index) {
@@ -63,36 +67,34 @@ class _PagedNavigationState extends State<PagedNavigation> {
               );
         }
       },
-      child: Column(
-        children: [
-          Expanded(
-            child: PageView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              onPageChanged: syncPage,
-              controller: _controller,
-              children: const [
-                CurrentWeatherScreen(),
-                ForecastScreen(),
-              ],
+      child: Scaffold(
+        backgroundColor: const Color(0xfff6edff),
+        resizeToAvoidBottomInset: true,
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: currentIndex,
+          onTap: changePage,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Text(
+                'Today',
+              ),
+              label: 'Today',
             ),
-          ),
-          BottomNavigationBar(
-            currentIndex: currentIndex,
-            onTap: changePage,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Text(
-                  'Today',
-                ),
-                label: 'Today',
-              ),
-              BottomNavigationBarItem(
-                icon: Text('Forecast'),
-                label: 'Forecast',
-              ),
-            ],
-          ),
-        ],
+            BottomNavigationBarItem(
+              icon: Text('Forecast'),
+              label: 'Forecast',
+            ),
+          ],
+        ),
+        body: PageView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          onPageChanged: syncPage,
+          controller: _controller,
+          children: const [
+            CurrentWeatherScreen(),
+            ForecastScreen(),
+          ],
+        ),
       ),
     );
   }

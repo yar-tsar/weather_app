@@ -16,6 +16,7 @@ class CurrentWeatherScreen extends StatelessWidget {
     return BlocBuilder<GeoBloc, GeoState>(
       builder: (context, geoState) {
         return Scaffold(
+          backgroundColor: const Color(0xfff6edff),
           appBar: AppBar(
             title: const Text('Today'),
           ),

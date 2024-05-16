@@ -10,19 +10,26 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<GeoBloc>(
-          create: (context) => GeoBloc(),
-        ),
-        BlocProvider<CurrentWeatherCubit>(
-          create: (context) => CurrentWeatherCubit(),
-        ),
-        BlocProvider<ForecastCubit>(
-          create: (context) => ForecastCubit(),
-        ),
-      ],
-      child: const PagedNavigation(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Weather App',
+      theme: ThemeData(
+        useMaterial3: true,
+      ),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<GeoBloc>(
+            create: (context) => GeoBloc(),
+          ),
+          BlocProvider<CurrentWeatherCubit>(
+            create: (context) => CurrentWeatherCubit(),
+          ),
+          BlocProvider<ForecastCubit>(
+            create: (context) => ForecastCubit(),
+          ),
+        ],
+        child: const PagedNavigation(),
+      ),
     );
   }
 }
