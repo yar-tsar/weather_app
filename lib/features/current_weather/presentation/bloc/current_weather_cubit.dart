@@ -7,11 +7,14 @@ class CurrentWeatherCubit extends Cubit<CurrentWeatherState> {
   CurrentWeatherCubit({required FetchWeatherUseCase fetchWeatherUseCase})
       : _fetchWeatherUseCase = fetchWeatherUseCase,
         super(
-          CurrentWeatherState(),
+          const CurrentWeatherState(
+            status: CurrentWeatherStateStatus.init,
+          ),
         );
 
   final FetchWeatherUseCase _fetchWeatherUseCase;
   Future<void> fetchWeather(double? latitude, double? longitude) async {
+    emit(state.copyWith(status: CurrentWeatherStateStatus.loading));
     if (latitude == null || longitude == null) {
       throw Exception('No geo data');
     }
@@ -21,6 +24,9 @@ class CurrentWeatherCubit extends Cubit<CurrentWeatherState> {
       longitude: longitude,
       unit: WeatherUnit.metric,
     ));
-    emit(state.copyWith(weather: weather));
+    emit(state.copyWith(
+      weather: weather,
+      status: CurrentWeatherStateStatus.success,
+    ));
   }
 }

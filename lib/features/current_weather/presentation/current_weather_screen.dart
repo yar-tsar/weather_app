@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:weather_app/common/presentation/widgets/status_bar.dart';
 import 'package:weather_app/common/presentation/widgets/weather_icon.dart';
 import 'package:weather_app/features/current_weather/presentation/bloc/current_weather_cubit.dart';
 import 'package:weather_app/features/current_weather/presentation/bloc/current_weather_state.dart';
@@ -24,7 +25,7 @@ class CurrentWeatherScreen extends StatelessWidget {
           body: RefreshIndicator(
             onRefresh: () async {
               //TODO: implement refresh
-              context.read<GeoBloc>().add(CheckConnection());
+              context.read<GeoBloc>().add(CheckGps());
               context.read<GeoBloc>().add(GetGeoData());
               context.read<CurrentWeatherCubit>().fetchWeather(
                     geoState.locationData?.latitude,
@@ -37,142 +38,155 @@ class CurrentWeatherScreen extends StatelessWidget {
             },
             child: BlocBuilder<CurrentWeatherCubit, CurrentWeatherState>(
               builder: (context, weatherState) {
-                return ListView(
+                return Stack(
                   children: [
-                    const SizedBox(height: 32),
-                    Center(
-                      child: weatherState.weather?.condition == null
-                          ? const SizedBox(
-                              width: 60,
-                              height: 60,
-                            )
-                          : WeatherIcon(
-                              weatherCondition: weatherState.weather!.condition,
-                            ),
-                    ),
-                    const SizedBox(height: 32),
-                    Center(
-                      child: Text(
-                        geoState.locationInfo,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Center(
-                      child: Text(
-                        weatherState.timestamp,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: weatherState.condition != null
-                                  ? '${(weatherState.weather!.description)} '
-                                  : '---- ',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            TextSpan(
-                              text: weatherState.temperature,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
+                    ListView(
+                      children: [
+                        const SizedBox(height: 32),
+                        Center(
+                          child: weatherState.weather?.condition == null
+                              ? const SizedBox(
+                                  width: 60,
+                                  height: 60,
+                                )
+                              : WeatherIcon(
+                                  weatherCondition:
+                                      weatherState.weather!.condition,
+                                ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            const TextSpan(
-                              text: 'Humidity: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            TextSpan(
-                              text: weatherState.humidity,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            const TextSpan(
-                              text: 'Pressure: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            TextSpan(
-                              text: weatherState.pressure,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            const TextSpan(
-                              text: 'Wind speed: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            TextSpan(
-                              text: weatherState.windSpeed,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 64),
-                    GestureDetector(
-                      onTap: () {
-                        Share.share(
-                          weatherState.shareMessage,
-                        );
-                      },
-                      child: const Center(
-                        child: Text(
-                          'Share weather',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue,
+                        const SizedBox(height: 32),
+                        Center(
+                          child: Text(
+                            geoState.locationInfo,
                           ),
                         ),
+                        const SizedBox(height: 16),
+                        Center(
+                          child: Text(
+                            weatherState.timestamp,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        Center(
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: weatherState.condition != null
+                                      ? '${(weatherState.weather!.description)} '
+                                      : '---- ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: weatherState.temperature,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        Center(
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'Humidity: ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: weatherState.humidity,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        Center(
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'Pressure: ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: weatherState.pressure,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        Center(
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'Wind speed: ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: weatherState.windSpeed,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 64),
+                        GestureDetector(
+                          onTap: () {
+                            Share.share(
+                              weatherState.shareMessage,
+                            );
+                          },
+                          child: const Center(
+                            child: Text(
+                              'Share weather',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Positioned(
+                      top: 0,
+                      child: StatusBar(
+                        visibility: weatherState.showStatusBar &&
+                            !geoState.showStatusBar,
+                        message: weatherState.statusMessage,
                       ),
-                    )
+                    ),
                   ],
                 );
               },

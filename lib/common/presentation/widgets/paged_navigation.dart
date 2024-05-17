@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:weather_app/common/presentation/widgets/status_bar.dart';
 import 'package:weather_app/features/current_weather/presentation/bloc/current_weather_cubit.dart';
 import 'package:weather_app/features/forecast/presentation/bloc/forecast_cubit.dart';
 import 'package:weather_app/features/forecast/presentation/forecast_screen.dart';
@@ -25,7 +26,7 @@ class _PagedNavigationState extends State<PagedNavigation> {
     _controller = PageController(
       initialPage: currentIndex,
     );
-    context.read<GeoBloc>().add(CheckConnection());
+    context.read<GeoBloc>().add(CheckGps());
     context.read<GeoBloc>().add(GetGeoData());
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -54,7 +55,7 @@ class _PagedNavigationState extends State<PagedNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<GeoBloc, GeoState>(
+    return BlocConsumer<GeoBloc, GeoState>(
       listener: (context, state) {
         if (state.locationData != null) {
           context.read<CurrentWeatherCubit>().fetchWeather(
@@ -67,35 +68,49 @@ class _PagedNavigationState extends State<PagedNavigation> {
               );
         }
       },
-      child: Scaffold(
-        backgroundColor: const Color(0xfff6edff),
-        resizeToAvoidBottomInset: true,
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: changePage,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Text(
-                'Today',
-              ),
-              label: 'Today',
+      builder: (context, state) {
+        return SafeArea(
+          child: Scaffold(
+            backgroundColor: const Color(0xfff6edff),
+            resizeToAvoidBottomInset: true,
+            extendBodyBehindAppBar: true,
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: currentIndex,
+              onTap: changePage,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.thermostat),
+                  label: 'Today',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.list),
+                  label: 'Forecast',
+                ),
+              ],
             ),
-            BottomNavigationBarItem(
-              icon: Text('Forecast'),
-              label: 'Forecast',
+            body: Stack(
+              children: [
+                PageView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  onPageChanged: syncPage,
+                  controller: _controller,
+                  children: const [
+                    CurrentWeatherScreen(),
+                    ForecastScreen(),
+                  ],
+                ),
+                Positioned(
+                  top: 56,
+                  child: StatusBar(
+                    visibility: state.showStatusBar,
+                    message: state.statusText,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        body: PageView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          onPageChanged: syncPage,
-          controller: _controller,
-          children: const [
-            CurrentWeatherScreen(),
-            ForecastScreen(),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

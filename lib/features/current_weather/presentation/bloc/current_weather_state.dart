@@ -1,12 +1,21 @@
+import 'package:equatable/equatable.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:weather_app/common/domain/models/weather_model.dart';
 
-class CurrentWeatherState {
-  CurrentWeatherState({
+enum CurrentWeatherStateStatus {
+  init,
+  loading,
+  success,
+}
+
+class CurrentWeatherState extends Equatable {
+  const CurrentWeatherState({
+    required this.status,
     this.weather,
   });
 
-  WeatherModel? weather;
+  final CurrentWeatherStateStatus status;
+  final WeatherModel? weather;
 
   WeatherCondition? get condition => weather?.condition;
 
@@ -31,11 +40,30 @@ class CurrentWeatherState {
   String get shareMessage =>
       'Hi! I am currently in $temperature, $humidity, $windSpeed, $pressure';
 
+  bool get showStatusBar => status == CurrentWeatherStateStatus.loading;
+
+  String get statusMessage {
+    switch (status) {
+      case CurrentWeatherStateStatus.loading:
+        return 'Loading ...';
+      default:
+        return '';
+    }
+  }
+
   CurrentWeatherState copyWith({
+    CurrentWeatherStateStatus? status,
     WeatherModel? weather,
   }) {
     return CurrentWeatherState(
+      status: status ?? this.status,
       weather: weather ?? this.weather,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        status,
+        weather,
+      ];
 }

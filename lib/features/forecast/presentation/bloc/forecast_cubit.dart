@@ -7,11 +7,14 @@ class ForecastCubit extends Cubit<ForecastState> {
   ForecastCubit({
     required FetchForecastUseCase fetchForecastUseCase,
   })  : _fetchForecastUseCase = fetchForecastUseCase,
-        super(ForecastState());
+        super(const ForecastState(status: ForecastStateStatus.init));
 
   final FetchForecastUseCase _fetchForecastUseCase;
 
   Future<void> fetchForecast(double? latitude, double? longitude) async {
+    emit(
+      state.copyWith(status: ForecastStateStatus.loading),
+    );
     if (latitude == null || longitude == null) {
       throw Exception('No geo data');
     }
@@ -21,6 +24,11 @@ class ForecastCubit extends Cubit<ForecastState> {
       longitude: longitude,
       unit: WeatherUnit.metric,
     ));
-    emit(state.copyWith(forecasts: forecasts));
+    emit(
+      state.copyWith(
+        forecasts: forecasts,
+        status: ForecastStateStatus.success,
+      ),
+    );
   }
 }

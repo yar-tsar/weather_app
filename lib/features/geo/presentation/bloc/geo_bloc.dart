@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location/location.dart';
 import 'package:weather_app/features/geo/domain/models/location_params.dart';
@@ -11,16 +12,18 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     required Location location,
   })  : _getGeoDataUseCase = getGeoDataUseCase,
         _location = location,
-        super(GeoState.init()) {
-    on<CheckConnection>((event, emit) => _checkConnection(event, emit));
+        super(const GeoState.init()) {
+    on<CheckGps>((event, emit) => _checkGpsAvailable(event, emit));
+    on<CheckNetwork>((event, emit) => _checkNetwork(event, emit));
     on<GetGeoData>((event, emit) => _getGeoData(event, emit));
   }
 
   final GetGeoDataUseCase _getGeoDataUseCase;
   final Location _location;
+  final Connectivity connectivity = Connectivity();
 
-  Future<void> _checkConnection(
-      CheckConnection event, Emitter<GeoState> emit) async {
+  Future<void> _checkGpsAvailable(
+      CheckGps event, Emitter<GeoState> emit) async {
     bool serviceEnabled;
     PermissionStatus permissionGranted;
 
@@ -28,6 +31,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     if (!serviceEnabled) {
       serviceEnabled = await _location.requestService();
       if (!serviceEnabled) {
+        emit(state.copyWith(status: GeoStateStatus.noData));
         return;
       }
     }
@@ -35,15 +39,36 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     permissionGranted = await _location.hasPermission();
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await _location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
+      if (permissionGranted != PermissionStatus.grantedLimited ||
+          permissionGranted != PermissionStatus.grantedLimited) {
+        emit(state.copyWith(status: GeoStateStatus.noPermissions));
         return;
       }
     }
 
-    emit(state.copyWith(isGeoDataActive: true));
+    emit(
+      state.copyWith(isGeoDataActive: true),
+    );
+    CheckNetwork();
+  }
+
+  Future<void> _checkNetwork(CheckNetwork event, Emitter<GeoState> emit) async {
+    connectivity.onConnectivityChanged.listen((event) {
+      if (event.contains(ConnectivityResult.mobile) ||
+          event.contains(ConnectivityResult.wifi)) {
+        emit(
+          state.copyWith(isNetworkActive: true),
+        );
+      } else {
+        emit(
+          state.copyWith(isNetworkActive: false, status: GeoStateStatus.noData),
+        );
+      }
+    });
   }
 
   Future<void> _getGeoData(GeoEvent event, Emitter<GeoState> emit) async {
+    emit(state.copyWith(status: GeoStateStatus.loading));
     LocationData locationData;
     locationData = await _location.getLocation();
 
@@ -57,6 +82,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
       state.copyWith(
         location: result,
         locationData: locationData,
+        status: GeoStateStatus.success,
       ),
     );
   }

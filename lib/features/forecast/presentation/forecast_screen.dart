@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:weather_app/common/presentation/widgets/status_bar.dart';
 import 'package:weather_app/common/presentation/widgets/weather_icon.dart';
 import 'package:weather_app/features/current_weather/presentation/bloc/current_weather_cubit.dart';
 import 'package:weather_app/features/forecast/presentation/bloc/forecast_cubit.dart';
@@ -23,7 +24,7 @@ class ForecastScreen extends StatelessWidget {
           body: RefreshIndicator(
             onRefresh: () async {
               //TODO: implement refresh
-              context.read<GeoBloc>().add(CheckConnection());
+              context.read<GeoBloc>().add(CheckGps());
               context.read<GeoBloc>().add(GetGeoData());
               context.read<CurrentWeatherCubit>().fetchWeather(
                     geoState.locationData?.latitude,
@@ -36,55 +37,68 @@ class ForecastScreen extends StatelessWidget {
             },
             child: BlocBuilder<ForecastCubit, ForecastState>(
               builder: (context, forecastState) {
-                return forecastState.forecasts == null
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : ListView.separated(
-                        itemCount: forecastState.forecasts!.length,
-                        separatorBuilder: (context, index) {
-                          return const Divider();
-                        },
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              Row(
+                return Stack(
+                  children: [
+                    forecastState.forecasts == null
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : ListView.separated(
+                            itemCount: forecastState.forecasts!.length,
+                            separatorBuilder: (context, index) {
+                              return const Divider();
+                            },
+                            itemBuilder: (context, index) {
+                              return Column(
                                 children: [
-                                  const SizedBox(
-                                    width: 16,
-                                  ),
-                                  WeatherIcon.small(
-                                    weatherCondition: forecastState
-                                        .forecasts![index].weather.condition,
-                                  ),
-                                  const SizedBox(
-                                    width: 16,
-                                  ),
-                                  Text(
-                                    Jiffy.parseFromMillisecondsSinceEpoch(
-                                      forecastState.forecasts![index].date *
-                                          1000,
-                                    ).j,
-                                  ),
-                                  const SizedBox(
-                                    width: 16,
-                                  ),
-                                  Text(
-                                    forecastState
-                                        .forecasts![index].weather.description,
-                                  ),
-                                  const SizedBox(
-                                    width: 16,
-                                  ),
-                                  Text(
-                                    '${forecastState.forecasts![index].weather.temp.toInt().toString()} °C',
+                                  Row(
+                                    children: [
+                                      const SizedBox(
+                                        width: 16,
+                                      ),
+                                      WeatherIcon.small(
+                                        weatherCondition: forecastState
+                                            .forecasts![index]
+                                            .weather
+                                            .condition,
+                                      ),
+                                      const SizedBox(
+                                        width: 16,
+                                      ),
+                                      Text(
+                                        Jiffy.parseFromMillisecondsSinceEpoch(
+                                          forecastState.forecasts![index].date *
+                                              1000,
+                                        ).j,
+                                      ),
+                                      const SizedBox(
+                                        width: 16,
+                                      ),
+                                      Text(
+                                        forecastState.forecasts![index].weather
+                                            .description,
+                                      ),
+                                      const SizedBox(
+                                        width: 16,
+                                      ),
+                                      Text(
+                                        '${forecastState.forecasts![index].weather.temp.toInt().toString()} °C',
+                                      ),
+                                    ],
                                   ),
                                 ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                              );
+                            },
+                          ),
+                    Positioned(
+                      top: 0,
+                      child: StatusBar(
+                        visibility: forecastState.showStatusBar,
+                        message: forecastState.statusMessage,
+                      ),
+                    ),
+                  ],
+                );
               },
             ),
           ),
