@@ -62,9 +62,7 @@ class _PagedNavigationState extends State<PagedNavigation> {
             state.locationData == null) {
           context.read<GeoBloc>().add(GetGeoData());
         }
-        if (state.locationData != null &&
-            state.isGeoDataAvailable &&
-            state.isNetworkAvailable) {
+        if (state.locationData != null && state.isNetworkAvailable) {
           context.read<CurrentWeatherCubit>().fetchWeather(
                 state.locationData?.latitude,
                 state.locationData?.longitude,

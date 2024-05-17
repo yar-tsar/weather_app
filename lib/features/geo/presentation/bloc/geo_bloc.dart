@@ -43,7 +43,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     permissionGranted = await _location.hasPermission();
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await _location.requestPermission();
-      if (permissionGranted != PermissionStatus.grantedLimited ||
+      if (permissionGranted != PermissionStatus.granted ||
           permissionGranted != PermissionStatus.grantedLimited) {
         emit(state.copyWith(status: GeoStateStatus.noPermissions));
         return;
@@ -83,9 +83,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
   }
 
   Future<void> _getGeoData(GeoEvent event, Emitter<GeoState> emit) async {
-    if (!(state.status == GeoStateStatus.noPermissions ||
-        !state.isNetworkAvailable ||
-        !state.isGeoDataAvailable)) {
+    if (state.isNetworkAvailable) {
       emit(state.copyWith(status: GeoStateStatus.loading));
       LocationData locationData;
       locationData = await _location.getLocation();
