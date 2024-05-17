@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:weather_app/common/presentation/widgets/weather_icon.dart';
-import 'package:weather_app/features/current/presentation/bloc/current_weather_cubit.dart';
-import 'package:weather_app/features/current/presentation/bloc/current_weather_state.dart';
+import 'package:weather_app/features/current_weather/presentation/bloc/current_weather_cubit.dart';
+import 'package:weather_app/features/current_weather/presentation/bloc/current_weather_state.dart';
 import 'package:weather_app/features/forecast/presentation/bloc/forecast_cubit.dart';
-import 'package:weather_app/features/geo/bloc/geo_bloc.dart';
-import 'package:weather_app/features/geo/bloc/geo_events.dart';
-import 'package:weather_app/features/geo/bloc/geo_state.dart';
+import 'package:weather_app/features/geo/presentation/bloc/geo_bloc.dart';
+import 'package:weather_app/features/geo/presentation/bloc/geo_events.dart';
+import 'package:weather_app/features/geo/presentation/bloc/geo_state.dart';
 
 class CurrentWeatherScreen extends StatelessWidget {
   const CurrentWeatherScreen({super.key});

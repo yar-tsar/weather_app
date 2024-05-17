@@ -1,5 +1,5 @@
 import 'package:location/location.dart';
-import 'package:weather_app/features/geo/domain/location_model.dart';
+import 'package:weather_app/features/geo/domain/models/location_model.dart';
 
 class GeoState {
   GeoState({

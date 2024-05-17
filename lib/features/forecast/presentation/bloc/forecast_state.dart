@@ -1,4 +1,4 @@
-import 'package:weather_app/features/forecast/domain/forecast_model.dart';
+import 'package:weather_app/features/forecast/domain/models/forecast_model.dart';
 
 class ForecastState {
   ForecastState({

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:weather_app/common/presentation/widgets/weather_icon.dart';
-import 'package:weather_app/features/current/presentation/bloc/current_weather_cubit.dart';
+import 'package:weather_app/features/current_weather/presentation/bloc/current_weather_cubit.dart';
 import 'package:weather_app/features/forecast/presentation/bloc/forecast_cubit.dart';
 import 'package:weather_app/features/forecast/presentation/bloc/forecast_state.dart';
-import 'package:weather_app/features/geo/bloc/geo_bloc.dart';
-import 'package:weather_app/features/geo/bloc/geo_events.dart';
-import 'package:weather_app/features/geo/bloc/geo_state.dart';
+import 'package:weather_app/features/geo/presentation/bloc/geo_bloc.dart';
+import 'package:weather_app/features/geo/presentation/bloc/geo_events.dart';
+import 'package:weather_app/features/geo/presentation/bloc/geo_state.dart';
 
 class ForecastScreen extends StatelessWidget {
   const ForecastScreen({super.key});
@@ -37,7 +37,9 @@ class ForecastScreen extends StatelessWidget {
             child: BlocBuilder<ForecastCubit, ForecastState>(
               builder: (context, forecastState) {
                 return forecastState.forecasts == null
-                    ? const CircularProgressIndicator()
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
                     : ListView.separated(
                         itemCount: forecastState.forecasts!.length,
                         separatorBuilder: (context, index) {
