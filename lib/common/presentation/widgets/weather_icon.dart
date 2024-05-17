@@ -15,7 +15,7 @@ class WeatherIcon extends StatelessWidget {
   const WeatherIcon.small({
     required this.weatherCondition,
     super.key,
-  }) : size = const Size(80, 80);
+  }) : size = const Size(68, 68);
 
   @override
   Widget build(BuildContext context) {

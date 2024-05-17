@@ -20,7 +20,7 @@ class CurrentWeatherState extends Equatable {
   WeatherCondition? get condition => weather?.condition;
 
   String get temperature =>
-      weather?.temp != null ? '${weather?.temp.toString()} °C' : '-- °C';
+      weather?.temp != null ? '${weather?.temp.round().toString()}°C' : '-- °C';
 
   String get humidity =>
       weather?.humidity != null ? '${weather?.humidity.toString()} %' : '-- %';

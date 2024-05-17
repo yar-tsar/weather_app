@@ -69,26 +69,27 @@ class _PagedNavigationState extends State<PagedNavigation> {
         }
       },
       builder: (context, state) {
-        return SafeArea(
-          child: Scaffold(
-            backgroundColor: const Color(0xfff6edff),
-            resizeToAvoidBottomInset: true,
-            extendBodyBehindAppBar: true,
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: currentIndex,
-              onTap: changePage,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.thermostat),
-                  label: 'Today',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.list),
-                  label: 'Forecast',
-                ),
-              ],
-            ),
-            body: Stack(
+        return Scaffold(
+          backgroundColor: const Color(0xFFF6EDFF),
+          resizeToAvoidBottomInset: true,
+          extendBodyBehindAppBar: true,
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: const Color(0xFFF6EDFF),
+            currentIndex: currentIndex,
+            onTap: changePage,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.thermostat),
+                label: 'Today',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.list),
+                label: 'Forecast',
+              ),
+            ],
+          ),
+          body: SafeArea(
+            child: Stack(
               children: [
                 PageView(
                   physics: const AlwaysScrollableScrollPhysics(),
