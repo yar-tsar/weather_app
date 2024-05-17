@@ -24,13 +24,9 @@ class CurrentWeatherScreen extends StatelessWidget {
           ),
           body: RefreshIndicator(
             onRefresh: () async {
-              //TODO: implement refresh
               context.read<GeoBloc>().add(CheckGps());
+              context.read<GeoBloc>().add(CheckNetwork());
               context.read<GeoBloc>().add(GetGeoData());
-              context.read<CurrentWeatherCubit>().fetchWeather(
-                    geoState.locationData?.latitude,
-                    geoState.locationData?.longitude,
-                  );
             },
             child: BlocBuilder<CurrentWeatherCubit, CurrentWeatherState>(
               builder: (context, weatherState) {

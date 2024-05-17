@@ -27,7 +27,7 @@ class _PagedNavigationState extends State<PagedNavigation> {
       initialPage: currentIndex,
     );
     context.read<GeoBloc>().add(CheckGps());
-    context.read<GeoBloc>().add(GetGeoData());
+    context.read<GeoBloc>().add(CheckNetwork());
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FlutterNativeSplash.remove();
@@ -57,7 +57,14 @@ class _PagedNavigationState extends State<PagedNavigation> {
   Widget build(BuildContext context) {
     return BlocConsumer<GeoBloc, GeoState>(
       listener: (context, state) {
-        if (state.locationData != null) {
+        if (state.isGeoDataAvailable &&
+            state.isNetworkAvailable &&
+            state.locationData == null) {
+          context.read<GeoBloc>().add(GetGeoData());
+        }
+        if (state.locationData != null &&
+            state.isGeoDataAvailable &&
+            state.isNetworkAvailable) {
           context.read<CurrentWeatherCubit>().fetchWeather(
                 state.locationData?.latitude,
                 state.locationData?.longitude,

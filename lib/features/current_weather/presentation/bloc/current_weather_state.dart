@@ -34,7 +34,10 @@ class CurrentWeatherState extends Equatable {
       : '-- hPa';
 
   String get timestamp => weather != null
-      ? Jiffy.parseFromMillisecondsSinceEpoch(weather!.timestamp * 1000).Hm
+      ? Jiffy.parseFromMillisecondsSinceEpoch(weather!.timestamp * 1000,
+              isUtc: true)
+          .toLocal()
+          .Hm
       : '--';
 
   String get shareMessage =>

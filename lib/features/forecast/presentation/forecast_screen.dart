@@ -25,13 +25,9 @@ class ForecastScreen extends StatelessWidget {
           ),
           body: RefreshIndicator(
             onRefresh: () async {
-              //TODO: implement refresh
               context.read<GeoBloc>().add(CheckGps());
+              context.read<GeoBloc>().add(CheckNetwork());
               context.read<GeoBloc>().add(GetGeoData());
-              context.read<ForecastCubit>().fetchForecast(
-                    geoState.locationData?.latitude,
-                    geoState.locationData?.longitude,
-                  );
             },
             child: BlocBuilder<ForecastCubit, ForecastState>(
               builder: (context, forecastState) {
@@ -61,7 +57,9 @@ class ForecastScreen extends StatelessWidget {
                               bool isSameDate = true;
                               if (index == 0) {
                                 isSameDate = isSameDateChecker(
-                                  current: Jiffy.now().millisecondsSinceEpoch,
+                                  current: Jiffy.now()
+                                      .toLocal()
+                                      .millisecondsSinceEpoch,
                                   next: forecastState.forecasts![index].date,
                                 );
                               }
@@ -137,7 +135,8 @@ class ForecastScreen extends StatelessWidget {
                     Positioned(
                       top: 0,
                       child: StatusBar(
-                        visibility: forecastState.showStatusBar,
+                        visibility: forecastState.showStatusBar &&
+                            !geoState.showStatusBar,
                         message: forecastState.statusMessage,
                       ),
                     ),
@@ -163,7 +162,7 @@ class _DaySeparator extends StatelessWidget {
   Widget build(BuildContext context) {
     final Jiffy convertedDate = Jiffy.parseFromMillisecondsSinceEpoch(
       date * 1000,
-    );
+    ).toLocal();
     return Row(
       children: [
         Container(
@@ -176,10 +175,10 @@ class _DaySeparator extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(25)),
           ),
           child: Text(
-            Jiffy.now().isSame(
-              convertedDate,
-              unit: Unit.day,
-            )
+            Jiffy.now().toLocal().isSame(
+                      convertedDate,
+                      unit: Unit.day,
+                    )
                 ? 'Today'
                 : convertedDate.EEEE,
             style: const TextStyle(
