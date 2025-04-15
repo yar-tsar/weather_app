@@ -1,3 +1,3 @@
 # weather_app
 
-A new Flutter project.
+A simple weather app with current weather and forecast. Using Open Weather API.
